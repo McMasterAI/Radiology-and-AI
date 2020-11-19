@@ -16,3 +16,7 @@ The intended models to do these tasks include deep convolutional neural network 
 Recent studies have also shown Artificial Intelligence has the potential not only to determine primary tumour types, but also predict tumour response to radiotherapy. Identification of patients who would be most likely to benefit from costly and difficult treatments like immunotherapy would also be of great benefit to patients an radiologists alike. 
 
 Additionally, patients diagnosed with glioblastomas often face challenges in treatment due to changes in the imaging of the tumour showing ambiguous pictures of progression of the cancer versus improvement. A tool which can differentiate which patients are undergoing tumour progression versus so called "pseudoprogression" could be highly benficial in treatment of glioblastoma.
+
+
+
+
