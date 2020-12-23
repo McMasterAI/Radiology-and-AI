@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='Radiology-and-AI',
+    name='Radiology_and_AI',
     version='1.0',
-    packages=['Radiology-and-AI'],
+    packages=['Radiology_and_AI'],
     url='https://github.com/McMasterAI/Radiology-and-AI.git',
     license='',
     author='',
