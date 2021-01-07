@@ -1,11 +1,16 @@
-import pytorch_lightning as pl
-import torch
-
 #Pytorch-lightning setup
+import sys
+sys.path.append('../')
+from lib.medzoo.Unet3D import UNet3D
+from lib.losses3D.basic import compute_per_channel_dice, expand_as_one_hot
+import torch
+import pytorch_lightning as pl
+
 class TumourSegmentation(pl.LightningModule):
-  def __init__(self,model):
+  def __init__(self):
     super().__init__()
-    self.model = model
+    self.model =  UNet3D(in_channels=4, n_classes=2, base_n_filter=8) #.cuda()
+    #self.model = model
   
   def forward(self,x):
   #  x=x.half()
@@ -30,14 +35,17 @@ class TumourSegmentation(pl.LightningModule):
     #plt.show()
 
     shape = list(y.size())
-    shape[1] = 3
+    shape[1] = 2
     zeros = torch.zeros(shape).cuda()
 
-    for i in range(1, 4):
-      zeros[:, i-1][torch.squeeze(y == i, dim=1)] = 1
+    zeros[:, 0][torch.torch.squeeze(y == 1, dim=1)] = 1
+    zeros[:, 0][torch.torch.squeeze(y == 4, dim=1)] = 1
+    zeros[:, 1][torch.torch.squeeze(y == 2, dim=1)] = 1
+    #for i, label_n in enumerate([1,2,4]):
+ #     zeros[:, i][torch.squeeze(y == label_n, dim=1)] = 1
 
   # basic mean of all channels for now
-    loss = compute_per_channel_dice(y_hat, zeros)
+    loss = -1*compute_per_channel_dice(y_hat, zeros)
     loss[loss != loss] = 0
     print('Training loss: ')
     print(loss)
@@ -59,16 +67,17 @@ class TumourSegmentation(pl.LightningModule):
     #plt.imshow(y_hat[0, 2, 120])
     #plt.imshow(y_hat[0, 3, 120])
     #plt.show()
-
     shape = list(y.size())
-    shape[1] = 3
+    shape[1] = 2
     zeros = torch.zeros(shape).cuda()
 
-    for i in range(1, 4):
-      zeros[:, i-1][torch.squeeze(y == i, dim=1)] = 1
+    zeros[:, 0][torch.torch.squeeze(y == 1, dim=1)] = 1
+    zeros[:, 0][torch.torch.squeeze(y == 4, dim=1)] = 1
+    zeros[:, 1][torch.torch.squeeze(y == 2, dim=1)] = 1
 
   # basic mean of all channels for now
-    loss = compute_per_channel_dice(y_hat, zeros)
+    loss = -1*compute_per_channel_dice(y_hat, zeros)
+    
     loss[loss != loss] = 0
     print('Validation loss: ')
     print(loss)
@@ -78,4 +87,4 @@ class TumourSegmentation(pl.LightningModule):
     return loss
 
   def configure_optimizers(self):
-      return torch.optim.Adam(self.parameters(), lr=0.02)
+      return torch.optim.Adam(self.parameters(), lr=0.0001)
