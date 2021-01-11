@@ -5,20 +5,22 @@ import numpy as np
 
 def col_img(batch):
     bytes_data_list = [list(batch[i].items())[1][1] for i in range(5)]
-    bb = BytesIO(bytes_data_list[0])
-    fh = FileHolder(fileobj=bb)
+    bytes_data_keys = [list(batch[i].items())[0][1].split('_')[-1] for i in range(5)]
+    bytes_data_dict = dict(zip(bytes_data_keys,bytes_data_list))
 
+    bb = BytesIO(bytes_data_dict['flair'])
+    fh = FileHolder(fileobj=bb)
     f_flair = Nifti1Image.from_file_map({'header': fh, 'image':fh}).get_fdata()
-    bb = BytesIO(bytes_data_list[1])
+    bb = BytesIO(bytes_data_dict['seg'])
     fh = FileHolder(fileobj=bb)
     f_seg = Nifti1Image.from_file_map({'header': fh, 'image':fh}).get_fdata()
-    bb = BytesIO(bytes_data_list[2])
+    bb = BytesIO(bytes_data_dict['t1'])
     fh = FileHolder(fileobj=bb)
     f_t1 = Nifti1Image.from_file_map({'header': fh, 'image':fh}).get_fdata()
-    bb = BytesIO(bytes_data_list[3])
+    bb = BytesIO(bytes_data_dict['t1ce'])
     fh = FileHolder(fileobj=bb)
     f_t1ce=Nifti1Image.from_file_map({'header':fh, 'image':fh}).get_fdata()
-    bb = BytesIO(bytes_data_list[4])
+    bb = BytesIO(bytes_data_dict['t2'])
     fh = FileHolder(fileobj=bb)
     f_t2 =Nifti1Image.from_file_map({'header':fh, 'image':fh}).get_fdata()
 
