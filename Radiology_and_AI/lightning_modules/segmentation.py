@@ -7,10 +7,10 @@ import torch
 import pytorch_lightning as pl
 
 class TumourSegmentation(pl.LightningModule):
-  def __init__(self):
+  def __init__(self, learning_rate):
     super().__init__()
     self.model =  UNet3D(in_channels=4, n_classes=2, base_n_filter=8) #.cuda()
-    #self.model = model
+    self.learning_rate = learning_rate
   
   def forward(self,x):
   #  x=x.half()
@@ -87,4 +87,4 @@ class TumourSegmentation(pl.LightningModule):
     return loss
 
   def configure_optimizers(self):
-      return torch.optim.Adam(self.parameters(), lr=0.0001)
+      return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
