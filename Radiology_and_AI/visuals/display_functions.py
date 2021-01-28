@@ -11,9 +11,9 @@ def display_brain_and_segs(seg_1,seg_2 = numpy.array([None]),mri_chan=numpy.arra
         seg_2_small = make_smaller(seg_2,downsize_factor)
         ax.voxels(seg_2_small, facecolors='#1f77b430', shade=False)
     if (mri_chan.any() == None) == False:
-        mri_chan_small = make_smaller(seg_2,downsize_factor) 
+        mri_chan_small = make_smaller(mri_chan,downsize_factor) 
         ax.voxels(mri_chan_small, facecolors='#3eb19c20', shade=False)                   
-    plt.show() 
+    plt.show()
 
 def gen_gif(out_dir,seg_1,seg_2 = numpy.array([None]),mri_chan=numpy.array([None]),downsize_factor=5,angle_num = 20,fig_size=(50,25)): 
     for angle in range(0, 360, angle_num):
