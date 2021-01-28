@@ -50,11 +50,11 @@ class TumourSegmentation(pl.LightningModule):
   
     for i in range(len(self.classes)):
       if self.classes[i] == 1:
-        self.log('test_loss_core', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss_core', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
       elif self.classes[i] == 2:
-        self.log('test_loss_edema', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss_edema', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
       elif self.classes[i] == 4:
-        self.log('test_loss_enhancing', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss_enhancing', loss[i], on_step=True, on_epoch=True, prog_bar=True, logger=True)
     loss = torch.sum(loss)
 
     return loss
