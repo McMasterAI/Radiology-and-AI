@@ -3,8 +3,8 @@ import numpy
 import imageio
 import matplotlib.pyplot as plt
 
-def display_brain_and_segs(seg_1,seg_2 = None,mri_chan=None,downsize_factor=5):    
-    ax = make_ax(True)
+def display_brain_and_segs(seg_1,seg_2 = None,mri_chan=None,downsize_factor=5,fig_size=(50,25)):    
+    ax = make_ax(True,fig_size=fig_size)
     seg_1_small = make_smaller(seg_1,downsize_factor)
     ax.voxels(seg_1_small, edgecolors='gray', shade=False)
     if seg_2 != None:
@@ -15,9 +15,9 @@ def display_brain_and_segs(seg_1,seg_2 = None,mri_chan=None,downsize_factor=5):
         ax.voxels(mri_chan_small, facecolors='#3eb19c20', shade=False)                   
     plt.show() 
 
-def gen_gif(out_dir,seg_1,seg_2 = None,mri_chan=None,downsize_factor=5,angle_num = 20): 
+def gen_gif(out_dir,seg_1,seg_2 = None,mri_chan=None,downsize_factor=5,angle_num = 20,fig_size=(50,25)): 
     for angle in range(0, 360, angle_num):
-        ax = make_ax(True)
+        ax = make_ax(True,fig_size=(50,25))
         seg_1_small = make_smaller(seg_1,downsize_factor)
         ax.voxels(seg_1_small, edgecolors='gray', shade=False)
         if seg_2 != None:
@@ -39,8 +39,8 @@ def make_gif(in_dir,out_file,angle_num):
     imageio.mimsave(outfile, images)
 
 
-def make_ax(grid=False):
-    fig = plt.figure(figsize=(50,25))
+def make_ax(grid=False,fig_size = (50,25)):
+    fig = plt.figure(figsize=fig_size)
     ax = fig.gca(projection='3d')
     ax.set_xlabel("x")
     ax.set_ylabel("y")
