@@ -8,14 +8,16 @@ import torch
 import pytorch_lightning as pl
 
 class TumourSegmentation(pl.LightningModule):
-  def __init__(self, learning_rate, collator, batch_size, train_dataset, eval_dataset):
+  def __init__(self, learning_rate, collator, batch_size, train_dataset, eval_dataset, in_channels=4,n_classes=3):
     super().__init__()
-    self.model =  UNet3D(in_channels=4, n_classes=3, base_n_filter=8) #.cuda()
+    self.model =  UNet3D(in_channels=in_channels, n_classes=n_classes, base_n_filter=8) #.cuda()
     self.learning_rate = learning_rate
     self.collator = collator
     self.batch_size = batch_size
     self.train_dataset = train_dataset
     self.eval_dataset = eval_dataset
+    self.in_channels = in_channels
+    self.n_classes = n_classes
     self.save_hyperparameters()
 
   def forward(self,x):
@@ -30,18 +32,11 @@ class TumourSegmentation(pl.LightningModule):
     x, y = batch
     x = torch.unsqueeze(x, axis=0)
     y = torch.unsqueeze(y, axis=0)
-    #print(x.shape)
 
     y_hat = self.forward(x)
 
-    #plt.imshow(y_hat[0, 0, 120], cmap='')
-    #plt.imshow(y_hat.cpu()[0, 1, 120])
-    #plt.imshow(y_hat[0, 2, 120])
-    #plt.imshow(y_hat[0, 3, 120])
-    #plt.show()
-
     shape = list(y.size())
-    shape[1] = 3
+    shape[1] = self.n_classes
     zeros = torch.zeros(shape).cuda()
 
     zeros[:, 0][torch.squeeze(y == 1, dim=1)] = 1
@@ -57,23 +52,14 @@ class TumourSegmentation(pl.LightningModule):
     self.log('train_loss_edema', loss[2], on_step=True, on_epoch=True, prog_bar=True, logger=True)
     loss = torch.sum(loss)
 
-    #self.logger.experiment.flush()
-
     return loss
 
   def validation_step(self, batch, batch_idx):
     x, y = batch
     x = torch.unsqueeze(x, axis=0)
     y = torch.unsqueeze(y, axis=0)
-    #print(x.shape)
 
     y_hat = self.forward(x)
-
-    #plt.imshow(y_hat[0, 0, 120], cmap='')
-    #plt.imshow(y_hat.cpu()[0, 1, 120])
-    #plt.imshow(y_hat[0, 2, 120])
-    #plt.imshow(y_hat[0, 3, 120])
-    #plt.show()
 
     shape = list(y.size())
     shape[1] = 3
@@ -91,6 +77,8 @@ class TumourSegmentation(pl.LightningModule):
     self.log('test_loss_edema', loss[2], on_step=True, on_epoch=True, prog_bar=True, logger=True)
     loss = torch.sum(loss)
     return loss
+
+    
   def train_dataloader(self):
       return torch.utils.data.DataLoader(self.train_dataset, batch_size=self.batch_size,collate_fn=self.collator)
   def val_dataloader(self):
