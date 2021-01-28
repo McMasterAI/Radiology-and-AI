@@ -7,10 +7,10 @@ def display_brain_and_segs(seg_1,seg_2 = numpy.array([None]),mri_chan=numpy.arra
     ax = make_ax(True,fig_size=fig_size)
     seg_1_small = make_smaller(seg_1,downsize_factor)
     ax.voxels(seg_1_small, edgecolors='gray', shade=False)
-    if seg_2.any() == None:
+    if (seg_2.any() == None) == False:
         seg_2_small = make_smaller(seg_2,downsize_factor)
         ax.voxels(seg_2_small, facecolors='#1f77b430', shade=False)
-    if mri_chan.any() == None:
+    if (mri_chan.any() == None) == False:
         mri_chan_small = make_smaller(seg_2,downsize_factor) 
         ax.voxels(mri_chan_small, facecolors='#3eb19c20', shade=False)                   
     plt.show() 
@@ -20,10 +20,10 @@ def gen_gif(out_dir,seg_1,seg_2 = numpy.array([None]),mri_chan=numpy.array([None
         ax = make_ax(True,fig_size=(50,25))
         seg_1_small = make_smaller(seg_1,downsize_factor)
         ax.voxels(seg_1_small, edgecolors='gray', shade=False)
-        if seg_2.any() == None:
+        if (seg_2.any() == None) == False:
             seg_2_small = make_smaller(seg_2,downsize_factor)
             ax.voxels(seg_2_small, facecolors='#1f77b430', shade=False)
-        if mri_chan.any() == None:
+        if (mri_chan.any() == None) == False:
             mri_chan_small = make_smaller(seg_2,downsize_factor) 
             ax.voxels(mri_chan_small, facecolors='#3eb19c20', shade=False)   
         ax.view_init(30, angle)
