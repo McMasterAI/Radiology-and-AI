@@ -42,6 +42,10 @@ class TumourSegmentation(pl.LightningModule):
     for i in range(len(self.classes)):
       zeros[:, i][torch.squeeze(y == self.classes[i], dim=1)] = 1
 
+      
+    loss = -1*compute_per_channel_dice(y_hat, zeros)
+    loss[loss != loss] = 0
+
   # basic mean of all channels for now
   
     for i in range(len(self.classes)):
