@@ -7,10 +7,10 @@ def display_brain_and_segs(seg_1,seg_2 = None,mri_chan=None,downsize_factor=5,fi
     ax = make_ax(True,fig_size=fig_size)
     seg_1_small = make_smaller(seg_1,downsize_factor)
     ax.voxels(seg_1_small, edgecolors='gray', shade=False)
-    if seg_2 is not None:
+    if type(seg_2) == type(None):
         seg_2_small = make_smaller(seg_2,downsize_factor)
         ax.voxels(seg_2_small, facecolors='#1f77b430', shade=False)
-    if mri_chan is not None:
+    if type(mri_chan) == type(None):
         mri_chan_small = make_smaller(seg_2,downsize_factor) 
         ax.voxels(mri_chan_small, facecolors='#3eb19c20', shade=False)                   
     plt.show() 
