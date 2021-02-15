@@ -79,8 +79,6 @@ def col_img(batch, to_tensor = True, nyul_params = None, use_zscore= False, pl_p
       f_seg = torch.as_tensor(f_seg) 
 
     return ([concat, f_seg])
-  
-
 def nyul_train_dataloader(dataloader, n_imgs = 4, i_min=1, i_max=99, i_s_min=1, i_s_max=100, l_percentile=10, u_percentile=90, step=10, ignore_zero=True):
     """
     determine the standard scale for the set of images
@@ -176,4 +174,4 @@ def Zscore_normalize(img, floor=None):
     i[i < 0] = 0
     i[zero_mask] = 0
 
-    return i
+    return i    
