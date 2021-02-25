@@ -9,6 +9,7 @@ from random import random
 from augmentations.elastic_deformation import elastic_transform
 from augmentations.power_law_transformation import power_law_transformation
 from scipy.interpolate import interp1d
+import intensity_normalization
 
 def col_img(batch, to_tensor = True, nyul_params = None, use_zscore= False, pl_prob = 0, elastic_prob=0):
     """
