@@ -21,9 +21,8 @@ def run_training(
     training_transform,
     validation_transform,
     input_channels_list = ['flair','t1','t2','t1ce'],
-    input_image_dimensions = (240, 240, 160),
     seg_channels = [1,2,4],
-    train_val_split_ration = 0.9,
+    training_split_ratio = 0.9,
     model_type = 'UNet3D',
     batch_size = 1,
     num_loading_cpus = 1,
@@ -34,6 +33,7 @@ def run_training(
     seed=42,
     
     accumulate_grad_batches = 1,
+    default_root_dir='./Models/checkpoints'
     gpus=1,
     max_epochs = 10,
     precision=16,
@@ -56,8 +56,8 @@ def run_training(
         subjects.append(subject)        
     dataset = tio.SubjectsDataset(subjects)
     #Splitting datasets into training and validation
-    training_split_ratio = train_val_split_ration
     num_subjects = len(dataset)
+    print('Num Subjects: ',num_subjects)
     num_training_subjects = int(training_split_ratio * num_subjects)
     num_validation_subjects = num_subjects - num_training_subjects
     num_split_subjects = num_training_subjects, num_validation_subjects
@@ -85,6 +85,7 @@ def run_training(
     )
     
     trainer = pl.Trainer(
+        default_root_dir=default_root_dir,
         accumulate_grad_batches=accumulate_grad_batches,
         gpus=gpus,
         max_epochs=max_epochs,

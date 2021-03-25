@@ -18,14 +18,13 @@ def run_eval(
     input_data_path,    
     model_path,
     validation_transform,
-    output_results_path=None,
     input_channels_list = ['flair','t1','t2','t1ce'],
-    input_image_dimensions = (240, 240, 160),
     seg_channels = [1,2,4],
     model_type = 'UNet3D',
+    is_validation_data = True,
     batch_size = 1,
     num_loading_cpus = 1,      
-    train_val_split_ration=0.9,
+    training_split_ratio=0.9,
     seed=42
 ):
     
@@ -42,15 +41,17 @@ def run_eval(
         subjects.append(subject)        
     dataset = tio.SubjectsDataset(subjects)    
     
-    #Splitting datasets into training and validation    
-    training_split_ratio = train_val_split_ration
-    num_subjects = len(dataset)
-    num_training_subjects = int(training_split_ratio * num_subjects)
-    num_validation_subjects = num_subjects - num_training_subjects
-    num_split_subjects = num_training_subjects, num_validation_subjects
-    generator=torch.Generator().manual_seed(seed)
-    _, validation_subjects = torch.utils.data.random_split(subjects, num_split_subjects,generator)
-    validation_set = tio.SubjectsDataset(validation_subjects, validation_transform)   
+    if is_validation_data:
+        #Splitting datasets into training and validation    
+        num_subjects = len(dataset)
+        num_training_subjects = int(training_split_ratio * num_subjects)
+        num_validation_subjects = num_subjects - num_training_subjects
+        num_split_subjects = num_training_subjects, num_validation_subjects
+        generator=torch.Generator().manual_seed(seed)
+        _, validation_subjects = torch.utils.data.random_split(subjects, num_split_subjects,generator)
+        validation_set = tio.SubjectsDataset(validation_subjects, validation_transform)   
+    else:
+        validation_set = tio.SubjectsDataset(dataset, validation_transform)  
     
     model =  UNet3D(in_channels=len(input_channels_list), n_classes=len(seg_channels))
     model.load_state_dict(torch.load(model_path))
@@ -67,13 +68,14 @@ def run_eval(
     with torch.no_grad():
         for i,batch in tqdm.tqdm(enumerate(dataloader)):
             x= batch['data']
+            print(batch['seg'].shape)
             y = torch.cat([batch['seg'][:,x].unsqueeze(dim=1) for x in seg_channels],dim = 1)
+            print(y.shape)
             y_hat = model.forward(x)
             losses.append((-1*compute_per_channel_dice(y_hat, y)).detach().numpy().tolist())     
-    #print(losses)
     for i in range(len(seg_channels)):
         avg = 0
         for j in range(len(losses)):
             avg += losses[j][i]
-        print(avg/len(losses))
+        print(seg_channels[i], 'loss:', avg/len(losses))
             

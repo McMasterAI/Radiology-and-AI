@@ -44,7 +44,7 @@ class TumourSegmentation(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         x= batch['data']
-        y = torch.cat([batch['seg'][:,1:3],batch['seg'][:,4].unsqueeze(dim=1)],dim = 1)
+        y = torch.cat([batch['seg'][:,x].unsqueeze(dim=1) for x in self.classes],dim = 1)
         y_hat = self.forward(x)
         y_hat = self.normalization(y_hat)
 

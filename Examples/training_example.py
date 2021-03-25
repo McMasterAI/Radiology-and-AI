@@ -5,7 +5,9 @@ import torchio as tio
 
 training_transform = tio.Compose([
     tio.ZNormalization(masking_method=tio.ZNormalization.mean), 
-    tio.RandomBiasField(p=0.5),
+    tio.RandomNoise(p=0.5),
+    tio.RandomGamma(log_gamma=(-0.3, 0.3)),
+    tio.RandomElasticDeformation(),
     tio.CropOrPad((240, 240, 160)), 
     tio.OneHot(num_classes=5),
     
@@ -20,7 +22,7 @@ validation_transform = tio.Compose([
 
 run_training(
     input_data_path = '../brats_new/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData',
-    output_model_path = './Models/test_train_randbias_1e-3.pt',
+    output_model_path = './Models/test_train_many_1e-3.pt',
     training_transform = training_transform,
     validation_transform = validation_transform,
     max_epochs=10,
@@ -34,6 +36,6 @@ run_training(
     precision=16,
     wandb_logging = True,
     wandb_project_name = 'macai',
-    wandb_run_name = 'randbias_1e-3',    
+    wandb_run_name = 'many_1e-3',    
     
 )
