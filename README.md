@@ -20,6 +20,9 @@ Using our Visualization Tool it is simple to generate informative graphics and o
 ![BraTS20_Training_043](https://user-images.githubusercontent.com/44153501/113211177-2966d000-9243-11eb-8b52-c1cadfc4660a.gif)
 
 ## Research Motivation
+
+The below is information relating to the original motivating reason for taking on this project.
+
 ### Proposed Models
 Summary of ML models
 
